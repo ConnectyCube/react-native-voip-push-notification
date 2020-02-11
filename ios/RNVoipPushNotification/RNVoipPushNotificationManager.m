@@ -238,12 +238,12 @@ RCT_EXPORT_METHOD(clearVoipPushData:(RCTPromiseResolveBlock)resolve
 rejecter:(RCTPromiseRejectBlock)reject)
 {
     if (RCTRunningInAppExtension()) {
-        resolve();
+        resolve(@(0));
         return;
     }
 
     VoipPushData = nil;
-    resolve();
+    resolve(@(1));
 }
 
 RCT_EXPORT_METHOD(presentLocalNotification:(UILocalNotification *)notification)
