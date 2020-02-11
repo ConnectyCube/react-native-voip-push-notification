@@ -163,13 +163,16 @@ RCT_EXPORT_MODULE();
                                                       userInfo:@{@"deviceToken" : [hexString copy]}];
 }
 
-+ (void)didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type
++ (void)didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type withStringCallUUID:(NSString *)callUUID
 {
     NSLog(@"[RNVoipPushNotificationManager] didReceiveIncomingPushWithPayload payload.dictionaryPayload = %@, type = %@", payload.dictionaryPayload, type);
-    VoipPushData = payload.dictionaryPayload;
+    NSMutableDictionary *pushCallPayloadMutable = [payload.dictionaryPayload mutableCopy];
+    [pushCallPayloadMutable addEntriesFromDictionary: @{@"callUUID": callUUID}];
+    NSDictionary *pushCallPayload = [pushCallPayloadMutable copy];
+    VoipPushData = pushCallPayload;
     [[NSNotificationCenter defaultCenter] postNotificationName:RNVoipRemoteNotificationReceived
                                                         object:self
-                                                      userInfo:payload.dictionaryPayload];
+                                                      userInfo:pushCallPayload];
 }
 
 - (void)handleRemoteNotificationsRegistered:(NSNotification *)notification
@@ -238,12 +241,12 @@ RCT_EXPORT_METHOD(clearVoipPushData:(RCTPromiseResolveBlock)resolve
 rejecter:(RCTPromiseRejectBlock)reject)
 {
     if (RCTRunningInAppExtension()) {
-        resolve();
+        resolve(@(0));
         return;
     }
 
     VoipPushData = nil;
-    resolve();
+    resolve(@(1));
 }
 
 RCT_EXPORT_METHOD(presentLocalNotification:(UILocalNotification *)notification)
