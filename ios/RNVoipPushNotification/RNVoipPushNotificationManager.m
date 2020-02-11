@@ -57,6 +57,8 @@ static NSString *RCTCurrentAppBackgroundState()
 
 @implementation RNVoipPushNotificationManager
 
+static NSDictionary *VoipPushData = nil;
+
 RCT_EXPORT_MODULE();
 
 @synthesize bridge = _bridge;
@@ -164,6 +166,7 @@ RCT_EXPORT_MODULE();
 + (void)didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type
 {
     NSLog(@"[RNVoipPushNotificationManager] didReceiveIncomingPushWithPayload payload.dictionaryPayload = %@, type = %@", payload.dictionaryPayload, type);
+    VoipPushData = payload.dictionaryPayload;
     [[NSNotificationCenter defaultCenter] postNotificationName:RNVoipRemoteNotificationReceived
                                                         object:self
                                                       userInfo:payload.dictionaryPayload];
@@ -218,6 +221,29 @@ RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)callback)
     }
 
     callback(@[[self checkPermissions]]);
+}
+
+RCT_EXPORT_METHOD(getVoipPushData:(RCTPromiseResolveBlock)resolve
+rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (RCTRunningInAppExtension()) {
+        resolve(@{});
+        return;
+    }
+
+    resolve(VoipPushData);
+}
+
+RCT_EXPORT_METHOD(clearVoipPushData:(RCTPromiseResolveBlock)resolve
+rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (RCTRunningInAppExtension()) {
+        resolve();
+        return;
+    }
+
+    VoipPushData = nil;
+    resolve();
 }
 
 RCT_EXPORT_METHOD(presentLocalNotification:(UILocalNotification *)notification)

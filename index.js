@@ -93,6 +93,14 @@ export default class RNVoipPushNotification {
         _notifHandlers.delete(handler);
     }
 
+    static getVoipPushData() {
+      return RNVoipPushNotificationManager.getVoipPushData()
+    }
+
+    static clearVoipPushData() {
+        return RNVoipPushNotification.clearVoipPushData()
+    }
+
     /**
      * Requests notification permissions from iOS, prompting the user's
      * dialog box. By default, it will request all notification permissions, but
@@ -142,11 +150,11 @@ export default class RNVoipPushNotification {
      */
     constructor(nativeNotif) {
         this._data = {};
-  
+
         // Extract data from Apple's `aps` dict as defined:
-  
+
         // https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html
-  
+
         Object.keys(nativeNotif).forEach((notifKey) => {
             var notifVal = nativeNotif[notifKey];
             if (notifKey === 'aps') {
@@ -166,28 +174,28 @@ export default class RNVoipPushNotification {
         // alias because "alert" is an ambiguous name
         return this._alert;
     }
-  
+
     /**
      * Gets the sound string from the `aps` object
      */
     getSound() {
         return this._sound;
     }
-  
+
     /**
      * Gets the notification's main message from the `aps` object
      */
     getAlert() {
         return this._alert;
     }
-  
+
     /**
      * Gets the badge count number from the `aps` object
      */
     getBadgeCount() {
         return this._badgeCount;
     }
-  
+
     /**
      * Gets the data object on the notif
      */

@@ -12,6 +12,8 @@
 
 @interface RNVoipPushNotificationManager : NSObject <RCTBridgeModule>
 
+@property (class, nonatomic) NSDictionary *VoipPushData;
+
 - (void)voipRegistration;
 - (void)registerUserNotification:(NSDictionary *)permissions;
 - (NSDictionary *)checkPermissions;
